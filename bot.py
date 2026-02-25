@@ -1,5 +1,7 @@
 import logging
 import os
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, BotCommand
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ConversationHandler, MessageHandler, filters, ContextTypes
 from dotenv import load_dotenv
@@ -353,6 +355,19 @@ async def post_init(application: Application) -> None:
     await start_scheduler(application)
 
 
+class DummyServer(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/plain')
+        self.end_headers()
+        self.wfile.write(b"Bot is running!")
+
+def run_dummy_server():
+    port = int(os.environ.get("PORT", 8080))
+    server_address = ('0.0.0.0', port)
+    httpd = HTTPServer(server_address, DummyServer)
+    httpd.serve_forever()
+
 def main():
     init_db()
     token = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -388,6 +403,9 @@ def main():
 
     # Inline button handler
     application.add_handler(CallbackQueryHandler(button_callback))
+
+    # Start dummy web server for health checks
+    threading.Thread(target=run_dummy_server, daemon=True).start()
 
     logger.info("Bot starting with all features enabled...")
     application.run_polling(allowed_updates=Update.ALL_TYPES)

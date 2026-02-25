@@ -1,9 +1,20 @@
+# Secrets
 .env
+
+# Database
 users.db
+
+# Python
 __pycache__/
 *.pyc
+
+# Temp audio files
+*.mp3
+news_voice_*
+
+# Dev/planning folders (not needed for bot)
+.agents/
+.claude/
 .plans/
 docs/
 tests/
-*.mp3
-news_voice_*
