@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd D:/projects/newsAI && python -m pytest tests/test_database.py -v 2>&1)",
+      "Bash(cd D:/projects/newsAI && pip install -r requirements.txt 2>&1)",
+      "Bash(tail:*)",
+      "Bash(cd D:/projects/newsAI && python bot.py 2>&1)",
+      "Bash(taskkill:*)"
+    ]
+  }
+}
